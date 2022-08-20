@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web audio recorder test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+
+    <div id="controls">
+        <button id="recordButton">Record</button>
+        <button id="stopButton" disabled>Stop</button>
+    </div>
+    <h3>Recordings</h3>
+    <ol id="recordingsList"></ol>
+    <!-- inserting these scripts at the end to be able to use all the elements in the DOM --> 
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+    <script src="../static/js/app.js"></script>
+    <h2>1234</h2>
+    <h2>정답 : <span id="ans_t"></span></h2>
+    <h3>발음 : <span id="ans_p"></span></h3>
+    <h2>당신 : <span id="deaf_t"></span></h2>
+    <h3>발음 : <span id="deaf_p"></span></h3>
+    <h3>정확도 : <span id="result_acc"></span></h3>
+    <h3>당신의 점수는?? : <span id="result_score"></span></h3>
+    <img src="https://svrforum.com/files/attach/images/2022/03/15/2082920a9b5b83c07c49daa64359da94.jpg"
+    width="540" height="360" alt="" class="invisible">
+
+
+
+</body>
+</html>

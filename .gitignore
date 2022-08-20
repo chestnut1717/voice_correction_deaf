@@ -1,0 +1,6 @@
+/Language-correction-program
+utils/__pycache__
+
+/web_flask/model
+/web_flask/tokenizer
+/web_flask/utils/__pycache__
