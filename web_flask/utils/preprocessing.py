@@ -1,7 +1,10 @@
 from scipy.io import wavfile
-import noisereduce as nr
+# import noisereduce as nr
 import numpy as np
 from pydub import AudioSegment
+import io
+import soundfile as sf
+
 
 
 class DimentionOverflow(Exception):
@@ -12,8 +15,8 @@ class DimentionOverflow(Exception):
       return "The dimention is greater than 2"
 
 def convert_dim(data):
-  assert type(data) == np.ndarray, "Data ype is wrong"
-  
+  assert type(data) == np.ndarray, "Data type is wrong"
+  # 
   if data.ndim == 1:
     return data
   
@@ -36,3 +39,11 @@ def reduce_noise(file_path, file_name):
     # noise 제거 작업
     reduced_noise = nr.reduce_noise(y=data_r, sr=rate)
     wavfile.write(f"{file_name}_reducednoise.wav", rate, reduced_noise)
+
+def blob_to_wav(request):
+  input =  request.files['file'].read()
+  audio, samplerate = sf.read(io.BytesIO(input))
+
+  return audio, samplerate
+
+
