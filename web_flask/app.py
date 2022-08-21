@@ -1,20 +1,16 @@
 # app.py
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from flask_restx import Resource, Api
 from utils import preprocessing, phonemize, result
-from view import Home
+
 
 
 #Flask 객체 인스턴스 생성
 app = Flask(__name__)
-api = Api(app)
-
-api.add_namespace(Home, '/')
 
 
-# @app.route('/') # 접속하는 url
-# def index():
-#   return render_template('index.html',user="반원",data={'level':60,'point':360,'exp':45000})
+@app.route('/') # 접속하는 url
+def index():
+  return render_template('index.html',user="반원",data={'level':60,'point':360,'exp':45000})
 
 
 @app.route('/record', methods=["GET", "POST"])

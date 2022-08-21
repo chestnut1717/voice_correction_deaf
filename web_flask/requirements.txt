@@ -1,7 +1,0 @@
-librosa == 0.8.1
-pydub == 0.25.1
-noisereduce == 2.0.1
-transformers == 4.21.1
-phonemizer == 3.2.1
-dtw-python == 1.2.2
-torch
