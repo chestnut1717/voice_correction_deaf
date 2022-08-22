@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from utils import preprocessing, phonemize, result
 
 
-
 #Flask 객체 인스턴스 생성
 app = Flask(__name__)
 
@@ -11,6 +10,36 @@ app = Flask(__name__)
 @app.route('/') # 접속하는 url
 def index():
   return render_template('index.html',user="반원",data={'level':60,'point':360,'exp':45000})
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+  if request.method == 'POST':
+    # db에 저장하는 코드 들어온다
+    # return redirect(~~~)
+    pass
+  elif request.method == 'GET':
+    return render_template('signup.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+  if request.method == 'POST':
+    # db와 사용자 데이터가 일치하는지 확인
+    # 일치 안하면 alert 보내고 다시 그 창 머무르기
+    # 일치하면 service창이든 뭐든 redirect 하기
+    pass
+  
+  elif request.method == "GET":
+    return render_template('login.html')
+
+
+
+@app.route('/home',  methods=['GET', 'POST'])
+def home():
+  if request.method == 'GET':
+    return render_template('home.html')
+  else:
+    return redirect(url_for("record"))
 
 
 @app.route('/record', methods=["GET", "POST"])
@@ -41,6 +70,7 @@ def record():
            "result": [accuracy, score] }
   ## -------------------------------------------------##
     return data
+
 
 
 
