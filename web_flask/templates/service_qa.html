@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <!-- ======= Hero Section ======= -->
+ 
+  <main id="main">
+
+
+
+    <!-- ======= Features Section ======= -->
+    <section id="features" class="features">
+
+      <div class="container" data-aos="fade-up">
+
+        <header class="section-header">
+          <!--<h2>Features</h2>
+          <p>Laboriosam et omnis fuga quis dolor direda fara</p> -->
+        </header>
+
+        <div class="row">
+          
+          <!-- feature 처음 -->
+          <!-- <div class="col-lg-6">
+            <img src="assets/img/features.png" class="img-fluid" alt="">
+          </div> -->
+
+          <div class="col-lg-6 mt-5 mt-lg-0 d-flex">
+            <div class="row align-self-center gy-4">
+
+            </div>
+          </div>
+
+        </div>
+      
+
+
+
+        <!-- Feature Tabs -->
+
+        <div class="row feture-tabs" data-aos="none">
+          
+          <div>
+            <div>
+              <h2>Lv1. The rocket book (level 및 책 제목 출력) </h2>
+          
+            <div class ="textbox" >
+              {{ data['context'] }}
+            </div> <br>
+
+            <!-- Tabs -->
+          
+          <div class="qcenter">
+            <div >
+              <ul class="nav justify-content-center" >
+                <li >
+                  <a class="nav-link active" data-bs-toggle="pill" href="#tab1">Q1</a>
+                </li>
+                <li >
+                  <a class="nav-link" data-bs-toggle="pill" href="#tab2">Q2</a>
+                </li>
+                <li >
+                  <a class="nav-link" data-bs-toggle="pill" href="#tab3">Q3</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        
+            <!-- End Tabs -->
+          <div class="tabcontent_center">
+              <!-- Tab Content -->
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="tab1">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-check2"></i>
+                    <h4> {{ data["question"] }} </h4>
+                  </div>
+                  <p>{{  data["answer"] }}</p>
+                </div>
+                <!-- End Tab 1 Content -->
+
+                <div class="tab-pane fade show" id="tab2">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-check2"></i>
+                    <h4> Who is she?</h4>
+                  </div>
+                  <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
+                </div>
+                <!-- End Tab 2 Content -->
+    
+                <div class="tab-pane fade show" id="tab3">
+                  <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-check2"></i>
+                    <h4> Who am I?</h4>
+                  </div>
+                  <p>Laborum omnis voluptates voluptas qui sit aliquam blanditiis. Sapiente minima commodi dolorum non eveniet magni quaerat nemo et.</p>
+                </div>
+          </div>
+            
+
+
+              <!-- End Tab 3 Content -->
+
+              
+              
+
+          <!-- 마이크 녹음 부분 -->
+          <body>
+            <div class="buttoncenter">
+              <button id="recordButton"> Rec </button>
+              <button id="stopButton"> Stop </button>
+              <!-- <button id="Feedback" ><a href="feedback_better.html"style="color: black;"> Feedback</a></button> -->
+            <div>
+            <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
+            <script src="../static/js/app.js"></script>
+            <div id="sound-clips"></div>
+
+            <!-- <script>
+                const record = document.getElementById("record")
+                const stop = document.getElementById("stop")
+                const soundClips = document.getElementById("sound-clips")
+                const chkHearMic = document.getElementById("chk-hear-mic")
+        
+                const audioCtx = new(window.AudioContext || window.webkitAudioContext)() // 오디오 컨텍스트 정의
+        
+                const analyser = audioCtx.createAnalyser()
+                //        const distortion = audioCtx.createWaveShaper()
+                //        const gainNode = audioCtx.createGain()
+                //        const biquadFilter = audioCtx.createBiquadFilter()
+        
+                function makeSound(stream) {
+                    const source = audioCtx.createMediaStreamSource(stream)
+        
+                    source.connect(analyser)
+                    //            analyser.connect(distortion)
+                    //            distortion.connect(biquadFilter)
+                    //            biquadFilter.connect(gainNode)
+                    //            gainNode.connect(audioCtx.destination) // connecting the different audio graph nodes together
+                    analyser.connect(audioCtx.destination)
+        
+                }
+        
+                if (navigator.mediaDevices) {
+                    console.log('getUserMedia supported.')
+        
+                    const constraints = {
+                        audio: true
+                    }
+                    let chunks = []
+        
+                    navigator.mediaDevices.getUserMedia(constraints)
+                        .then(stream => {
+        
+                            const mediaRecorder = new MediaRecorder(stream)
+                            
+                            chkHearMic.onchange = e => {
+                                if(e.target.checked == true) {
+                                    audioCtx.resume()
+                                    makeSound(stream)
+                                } else {
+                                    audioCtx.suspend()
+                                }
+                            }
+                            
+                            record.onclick = () => {
+                                mediaRecorder.start()
+                                console.log(mediaRecorder.state)
+                                console.log("recorder started")
+                                record.style.background = "red"
+                                record.style.color = "black"
+                            }
+        
+                            stop.onclick = () => {
+                                mediaRecorder.stop()
+                                console.log(mediaRecorder.state)
+                                console.log("recorder stopped")
+                                record.style.background = ""
+                                record.style.color = ""
+                            }
+        
+                            mediaRecorder.onstop = e => {
+                                console.log("data available after MediaRecorder.stop() called.")
+        
+                                const clipName = prompt("오디오 파일 제목을 입력하세요.", new Date())
+        
+                                const clipContainer = document.createElement('article')
+                                const clipLabel = document.createElement('p')
+                                const audio = document.createElement('audio')
+                                const deleteButton = document.createElement('button')
+        
+                                clipContainer.classList.add('clip')
+                                audio.setAttribute('controls', '')
+                                deleteButton.innerHTML = "삭제"
+                                clipLabel.innerHTML = clipName
+        
+                                clipContainer.appendChild(audio)
+                                clipContainer.appendChild(clipLabel)
+                                clipContainer.appendChild(deleteButton)
+                                soundClips.appendChild(clipContainer)
+        
+                                audio.controls = true
+                                const blob = new Blob(chunks, {
+                                    'type': 'audio/ogg codecs=opus'
+                                })
+                                chunks = []
+                                const audioURL = URL.createObjectURL(blob)
+                                audio.src = audioURL
+                                console.log("recorder stopped")
+        
+                                deleteButton.onclick = e => {
+                                    evtTgt = e.target
+                                    evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode)
+                                }
+                            }
+        
+                            mediaRecorder.ondataavailable = e => {
+                                chunks.push(e.data)
+                            }
+                        })
+                        .catch(err => {
+                            console.log('The following error occurred: ' + err)
+                        })
+                }
+            </script> -->
+        </body>
+
+
+        </div>
+
+        <!-- End Feature Icons -->
+      </div>
+    </section>
+    <!-- End Features Section -->
+
+
+        </div>
+
+      </div>
+
+    </section><!-- End Services Section -->
+
+
+
+
+{% endblock %}
+
+</html>

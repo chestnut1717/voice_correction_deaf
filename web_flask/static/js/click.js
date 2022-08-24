@@ -12,5 +12,5 @@
 // // url = '/record'
 // // button_click.addEventListener('click', httpGet(url), false);
 document.getElementById("myButton").onclick = function () {
-    location.href = "www.yoursite.com";
+    location.href = "/records";
 };

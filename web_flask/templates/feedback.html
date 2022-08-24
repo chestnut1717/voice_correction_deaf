@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <main id="main">
+
+<!-- #################################################################################################### -->
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials">
+      <div class="container" data-aos="fade-up">
+        <header class="section-header">
+          <br>
+          <br>
+
+          <p> REPEAT AFTER ME! </p>
+          <br>
+          <h2> Feedback </h2>
+        </header>
+
+        <div class="testimonials-slider" data-aos="fade-up" data-aos-delay="none">
+          <div class="wrapper">
+
+            
+            <div class="slide">
+              <div class="testimonial-item">
+                <div class="greatinfo">
+                  <div class="profile mt-auto">
+                    <img src="assets/img/testimonials/great.png" class="testimonial-img" alt="">
+                  </div>
+                </div>
+                <h3> {{ data['result'][1] }} </h3>
+                <h4> {{ data['result'][0] }} %</h4>
+
+                <p>Answer : <span id="ans_t">{{ data['answer'][0] }}</span></p>
+                  <br>
+                <p>Yours : <span id="deaf_t">{{ data['deaf'][0] }}</span></p>
+
+              </div>
+            </div>
+
+
+            <div class="slide">
+              <div class="testimonial-item">
+                <!-- <div class="stars">
+                  <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div> -->
+                <h3 style="text-align:center;">{{ data['answer'][1] }} </h3><br>
+
+                <div class="feedback_box">
+                  파형 자리
+                </div>
+                <div class="profile mt-auto">
+                  <!-- <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt=""> -->
+
+                </div>
+              </div>
+            </div>
+            <!-- End testimonial item -->
+
+
+          </div>
+          <div class="pagination"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+  {% endblock %}
+
+</html>

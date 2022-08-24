@@ -17,6 +17,48 @@ var stopButton = document.getElementById("stopButton");
 recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
 
+window.onload = init;
+var context;    // Audio context
+var buf;        // Audio buffer
+
+function init() {
+if (!window.AudioContext) {
+    if (!window.webkitAudioContext) {
+        alert("Your browser does not support any AudioContext and cannot play back this audio.");
+        return;
+    }
+        window.AudioContext = window.webkitAudioContext;
+    }
+
+    context = new AudioContext();
+}
+
+// Audio 파일 만ㄷ르기
+function playByteArray(byteArray) {
+
+    var arrayBuffer = new ArrayBuffer(byteArray.length);
+    var bufferView = new Uint8Array(arrayBuffer);
+    for (i = 0; i < byteArray.length; i++) {
+      bufferView[i] = byteArray[i];
+    }
+
+    context.decodeAudioData(arrayBuffer, function(buffer) {
+        buf = buffer;
+        console.log(buf)
+        play();
+    });
+}
+
+// Play the loaded file
+function play() {
+    // Create a source node from the buffer
+    var source = context.createBufferSource();
+    source.buffer = buf;
+    // Connect to the final output node (the speakers)
+    source.connect(context.destination);
+    // Play immediately
+    source.start(0);
+}
 
 function startRecording() {
   console.log("recordButton clicked");
@@ -85,31 +127,17 @@ function createDownloadLink(blob) {
   link.download = filename+".wav"; //download forces the browser to download the file using the  filename
   link.innerHTML = "Save to disk";
 
-  //add the new audio element to li
-  li.appendChild(au);
+  // //add the new audio element to li
+  // li.appendChild(au);
   
-  //add the filename to the li
-  li.appendChild(document.createTextNode(filename+".wav "))
+  // //add the filename to the li
+  // li.appendChild(document.createTextNode(filename+".wav "))
 
-  //add the save to disk link to li
-  li.appendChild(link);
+  // //add the save to disk link to li
+  // li.appendChild(link);
 
-  //add the li element to the ol
-  recordingsList.appendChild(li);
-
-
-  // // 녹음파일 전송하는 법
-  // var data = new FormData()
-  // data.append('file', blob, 'filename')
-  // console.log(data)
-  // fetch('/record', {
-  //     method: 'POST',
-  //     body: data
-  // })
-  // }).then(response => response.json()
-  // ).then(json => {
-  //     console.log(json)
-  // }); 
+  // //add the li element to the ol
+  // recordingsList.appendChild(li);
 
     /* button이 클릭되었을때 이벤트 */
 
@@ -124,7 +152,7 @@ function createDownloadLink(blob) {
     // formdata.action='FormDataResult.jsp';
 
 
-    xhr.open('post','/record', true); 
+    xhr.open('post','/service_qa', true); 
     
     xhr.responseType = "json";
 
@@ -137,15 +165,20 @@ function createDownloadLink(blob) {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
             var result = xhr.response;
-              document.getElementById("ans_t").innerText = result.answer[0];
-              document.getElementById("ans_p").innerText = result.answer[1];
-              document.getElementById("deaf_t").innerText = result.deaf[0];
-              document.getElementById("deaf_p").innerText = result.deaf[1];
-              document.getElementById("result_acc").innerText = result.result[0];
-              document.getElementById("result_score").innerText = result.result[1];
-              console.log(document.getElementsByClassName("invisible"));
-              const inv =  document.querySelector('.invisible');
-              inv.classList.remove('invisible');
+
+            // https://stackoverflow.com/questions/38926335/flask-redirecturl-for-returning-html-but-not-loading-page
+            window.location = "/feedback";
+
+              // document.getElementById("ans_t").innerText = result.answer[0];
+              // document.getElementById("ans_p").innerText = result.answer[1];
+              // document.getElementById("deaf_t").innerText = result.deaf[0];
+              // document.getElementById("deaf_p").innerText = result.deaf[1];
+              // document.getElementById("result_acc").innerText = result.result[0];
+              // document.getElementById("result_score").innerText = result.result[1];
+              // playByteArray(result.wav)
+              // console.log(document.getElementsByClassName("invisible"));
+              // const inv =  document.querySelector('.invisible');
+              // inv.classList.remove('invisible');
 
             } else {
               alert('request에 뭔가 문제가 있어요.');
@@ -164,6 +197,7 @@ function createDownloadLink(blob) {
       
 
   }
+
 
 }
 

@@ -1,77 +1,126 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
 from utils import preprocessing, phonemize, result
+import rtvc_conn
+import numpy as np
+import noisereduce as nr
 
 
 #Flask 객체 인스턴스 생성
 app = Flask(__name__)
 
 
-@app.route('/') # 접속하는 url
-def index():
-  return render_template('index.html',user="반원",data={'level':60,'point':360,'exp':45000})
+# Home
+@app.route('/hello', methods=['GET']) 
+def hello():
+  return redirect('example')
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/example', methods=['GET']) 
+def example():
+  return render_template('example.html')
+
+
+# Home
+@app.route('/', methods=['GET']) 
+def index():
+  return render_template('index.html')
+
+# Login
+@app.route('/login', methods=['GET', 'POST'])
 def signup():
   if request.method == 'POST':
     # db에 저장하는 코드 들어온다
     # return redirect(~~~)
     pass
   elif request.method == 'GET':
-    return render_template('signup.html')
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-  if request.method == 'POST':
-    # db와 사용자 데이터가 일치하는지 확인
-    # 일치 안하면 alert 보내고 다시 그 창 머무르기
-    # 일치하면 service창이든 뭐든 redirect 하기
-    pass
-  
-  elif request.method == "GET":
     return render_template('login.html')
 
 
 
-@app.route('/home',  methods=['GET', 'POST'])
-def home():
-  if request.method == 'GET':
-    return render_template('home.html')
-  else:
-    return redirect(url_for("record"))
 
 
-@app.route('/record', methods=["GET", "POST"])
+@app.route('/service_qa', methods=["GET", "POST"])
 def record():
-  print(request.headers)
-  if request.method == "GET":
-    return render_template('record.html', question = '안뇽')
+  global ans_transcription
+  ans_transcription = "Hello, my name is Ryan"
+  # print(request.headers)
 
+  if request.method == "GET":
+    
+    import pymysql
+
+
+    host = "betterdatabase.cyooqkxaxvqu.us-east-1.rds.amazonaws.com"
+    username = "admin"
+    password = "jung0204"
+    port = 3306
+    database = "better"
+
+    db = pymysql.connect(
+                        host=host, 
+                        port=port, 
+                        user=username, passwd=password, 
+                        db=database, charset='utf8'
+                        )
+    import random
+    rdm = random.randint(1, 10)
+
+    sql = f"SELECT * FROM better_context_qa where better_context_qa.context_qa_id =  {rdm}"
+    with db:
+        with db.cursor() as cur:
+            cur.execute(sql)
+            result_sql = cur.fetchall()[0]
+
+    global answer       
+    context, question, answer = result_sql[1], result_sql[2], result_sql[3]
+
+
+    
+    return render_template('service_qa.html', data={"context" : context,
+                                                    "question" : question,
+                                                    "answer"  : answer})
+
+    
   else:
-    print(dir(request))
 
   # phoneme변환
   ## -------------------------------------------------##
-    audio, _ = preprocessing.blob_to_wav(request)
+    audio, sr = preprocessing.blob_to_wav(request)
+    # noise reduce code
+    audio_reduced = nr.reduce_noise(y=audio, sr=sr)
 
+    # 전역변수 사용
+    ans_transcription = answer
+    wav, sr = rtvc_conn.get_wav(audio, sr, ans_transcription)
+
+    from scipy.io.wavfile import write
+
+    write("example.wav", sr, wav.astype(np.float32))
     model, tokenizer = phonemize.load_model(), phonemize.load_tokenizer()
-    ans_transcription = "Hello, my name is Ryan"
     ans_phoneme = phonemize.text_to_phoneme(ans_transcription, is_stress=False)
 
     # 음성파일 -> text -> phoneme
     deaf_transcription, deaf_phoneme = phonemize.speak_to_phoneme(audio, tokenizer, model, is_stress=False)
 
+    # https://stackoverflow.com/questions/17365289/how-to-send-audio-wav-file-generated-at-the-server-to-client-browser
     lcs = result.lcs_algo(ans_phoneme, deaf_phoneme, len(ans_phoneme), len(deaf_phoneme))
     accuracy, score = result.calculate_acc(ans_phoneme, lcs)
+    print(accuracy)
 
+    global data
     data = {"answer" : [ans_transcription, ans_phoneme],
            "deaf" : [deaf_transcription, deaf_phoneme],
-           "result": [accuracy, score] }
+           "result": [accuracy, score],
+           "wav" : wav.tolist() }
+
+    result.to_graph(np.array(wav), np.array(audio))
   ## -------------------------------------------------##
-    return data
+    return redirect(url_for('feedback'))
 
 
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+  return render_template('feedback.html', data=data)
 
 
 
