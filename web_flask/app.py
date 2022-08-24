@@ -4,6 +4,7 @@ from utils import preprocessing, phonemize, result
 import rtvc_conn
 import numpy as np
 import noisereduce as nr
+import soundfile as sf
 
 
 #Flask 객체 인스턴스 생성
@@ -42,7 +43,6 @@ def signup():
 @app.route('/service_qa', methods=["GET", "POST"])
 def record():
   global ans_transcription
-  ans_transcription = "Hello, my name is Ryan"
   # print(request.headers)
 
   if request.method == "GET":
@@ -89,9 +89,13 @@ def record():
     # noise reduce code
     audio_reduced = nr.reduce_noise(y=audio, sr=sr)
 
+    sf.write("deaf.wav", audio, sr)
+
     # 전역변수 사용
     ans_transcription = answer
     wav, sr = rtvc_conn.get_wav(audio, sr, ans_transcription)
+    sf.write("answer.wav", wav, sr)
+
 
     from scipy.io.wavfile import write
 
@@ -113,7 +117,7 @@ def record():
            "result": [accuracy, score],
            "wav" : wav.tolist() }
 
-    result.to_graph(np.array(wav), np.array(audio))
+    # result.to_graph(np.array(wav), np.array(audio))
   ## -------------------------------------------------##
     return redirect(url_for('feedback'))
 
