@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<script>
+
+    String.format = function() {
+    let args = arguments;
+
+    return args[0].replace(/{(\d+)}/g, function(match, num) {
+        num = Number(num) + 1;
+        return typeof(args[num]) != undefined ? args[num] : match;
+        });
+    }
+
+    var path = "{{ url_for('database_download', filename='answer') }}";
+    console.log(path);
+    var audio = new Audio(src=String.format("{0}.wav", path));
+    // audio = {{ data_sound }}
+
+</script>
+
+<body>
+    <input type="button" onclick="audio.play();" value="PLAY"> <!--재생-->
+    <input type="button" onclick="audio.pause();" value="PAUSE"> <!--일시정지-->
+
+</body>
+</html>

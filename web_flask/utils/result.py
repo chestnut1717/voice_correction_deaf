@@ -3,6 +3,36 @@ import dtw
 import librosa
 import matplotlib.pyplot as plt
 
+import numpy as np
+import matplotlib.pyplot as plt
+import librosa
+import soundfile as sf
+
+
+def to_graph(ans_wav, deaf_wav, smoothing=False):
+
+    rms1, rms2 = librosa.feature.rms(ans_wav), librosa.feature.rms(deaf_wav)
+
+    new_rms1, new_rms2 = downsample(rms1, rms2)
+    if smoothing == True:
+      new_rms1_sm = moving_average(new_rms1, 10)
+      new_rms2_sm = moving_average(new_rms2, 10)
+      print(new_rms1_sm.shape, new_rms2_sm.shape)
+      plt.figure(figsize=[20,9])
+      plt.plot(new_rms1_sm)
+      plt.plot(new_rms2_sm)
+      plt.savefig('database/graph/graph_smoothing.png')
+
+    else:
+      plt.figure([20,9])
+      plt.plot(new_rms1)
+      plt.plot(new_rms2)
+      plt.savefig('database/graph/graph_not_smoothing.png')
+    return None
+
+def moving_average(x, w):
+    return np.convolve(x, np.ones(w), 'valid') / w
+
 # 두 개의 다른 signal 길이 맞춰주는 함수 고안
 def downsample(a, b):
     a, b = a.flatten(), b.flatten()
@@ -31,8 +61,9 @@ def downsample(a, b):
         print(len(compare)/len(target))
         print(per)
         sampled_list = target[(target > per)]
-
     return compare, np.array(sampled_list)
+
+
 
 # LCS 알고리즘을 사용하여 두 string 중에서 겹치는 음소 subsequence 출력 용도
 def lcs_algo(S1, S2, m, n):
@@ -112,12 +143,13 @@ def highlight(ans, lcs):
     
   return correct
 
-def to_graph(ans_wav, deaf_wav):
+# def to_graph(ans_wav, deaf_wav):
 
-    rms1, rms2 = librosa.feature.rms(ans_wav), librosa.feature.rms(deaf_wav)
-    compare, sample = downsample(rms1, rms2)
-    plt.plot(compare, sample)
-    # new_alignment = dtw.dtw(compare.flatten(), sample.flatten())
-    # new_alignment.plot(type='twoway').savefig('rms.png')
-    plt.savefig('dtw.png')
-    return None
+#     rms1, rms2 = librosa.feature.rms(ans_wav), librosa.feature.rms(deaf_wav)
+#     compare, sample = downsample(rms1, rms2)
+#     # plt.plot(compare, sample)
+#     # new_alignment = dtw.dtw(compare.flatten(), sample.flatten())
+#     # new_alignment.plot(type='twoway').savefig('rms.png')
+#     # plt.savefig('dtw.png')
+#     return None
+
