@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
+from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response, send_file, send_from_directory
 from utils import preprocessing, phonemize, result
 import rtvc_conn
 import numpy as np
@@ -11,17 +11,6 @@ import soundfile as sf
 app = Flask(__name__)
 
 
-# Home
-@app.route('/hello', methods=['GET']) 
-def hello():
-  return redirect('example')
-
-@app.route('/example', methods=['GET']) 
-def example():
-  return render_template('example.html')
-
-
-# Home
 @app.route('/', methods=['GET']) 
 def index():
   return render_template('index.html')
@@ -35,9 +24,6 @@ def signup():
     pass
   elif request.method == 'GET':
     return render_template('login.html')
-
-
-
 
 
 @app.route('/service_qa', methods=["GET", "POST"])
@@ -87,21 +73,29 @@ def record():
   ## -------------------------------------------------##
     audio, sr = preprocessing.blob_to_wav(request)
     # noise reduce code
-    audio_reduced = nr.reduce_noise(y=audio, sr=sr)
+    # audio_reduced = nr.reduce_noise(y=audio, sr=sr)
 
+    # sf.write("deaf_noreduce.wav", audio_reduced, sr)
     sf.write("deaf.wav", audio, sr)
 
     # 전역변수 사용
     ans_transcription = answer
-    wav, sr = rtvc_conn.get_wav(audio, sr, ans_transcription)
-    sf.write("answer.wav", wav, sr)
+    ans_wav, sr = rtvc_conn.get_wav(audio, sr, ans_transcription)
+    print(type(ans_wav),  len(ans_wav))
+    # wav_name = "answer.wav"
+    sf.write("answer.wav", ans_wav, sr)
+    ans_wav, sr = sf.read('an1swer.wav')
+
+    
 
 
-    from scipy.io.wavfile import write
+    # from scipy.io.wavfile import write
 
-    write("example.wav", sr, wav.astype(np.float32))
+    # write("example.wav", sr, wav.astype(np.float32))
     model, tokenizer = phonemize.load_model(), phonemize.load_tokenizer()
     ans_phoneme = phonemize.text_to_phoneme(ans_transcription, is_stress=False)
+    ans_phoneme_stress = phonemize.text_to_phoneme(ans_transcription, is_stress=True)
+
 
     # 음성파일 -> text -> phoneme
     deaf_transcription, deaf_phoneme = phonemize.speak_to_phoneme(audio, tokenizer, model, is_stress=False)
@@ -109,13 +103,24 @@ def record():
     # https://stackoverflow.com/questions/17365289/how-to-send-audio-wav-file-generated-at-the-server-to-client-browser
     lcs = result.lcs_algo(ans_phoneme, deaf_phoneme, len(ans_phoneme), len(deaf_phoneme))
     accuracy, score = result.calculate_acc(ans_phoneme, lcs)
+    
     print(accuracy)
 
+    # highlight
+    correct_list = result.highlight(ans_phoneme, lcs)
+    print(correct_list)
+
+    # to graph(image)
+    ## ans_wav, deaf_wav
+    result.to_graph(ans_wav, audio, smoothing=True)
+
     global data
-    data = {"answer" : [ans_transcription, ans_phoneme],
+    data = {"answer" : [ans_transcription, ans_phoneme_stress],
            "deaf" : [deaf_transcription, deaf_phoneme],
            "result": [accuracy, score],
-           "wav" : wav.tolist() }
+          #  "wav" : wav.tolist(),
+          #  "wav_name" : wav_name,
+           "correct_list" : correct_list }
 
     # result.to_graph(np.array(wav), np.array(audio))
   ## -------------------------------------------------##
@@ -126,7 +131,29 @@ def record():
 def feedback():
   return render_template('feedback.html', data=data)
 
+# @app.route('/database')
+# def database():
+#     # generate some file name
+#     # save the file in the `database_reports` folder used below
+#     return render_template('database.html', filename=stored_file_name)
 
+@app.route('/database/<filename>')
+def database_download(filename):
+    return send_from_directory('database', filename)
+
+# 동영상
+@app.route('/database/video/<filename>')
+def video_download(filename):
+    return send_from_directory('database/video', filename)
+
+@app.route('/database/image/<filename>')
+def image_download(filename):
+    return send_from_directory('database/image', filename)
+
+# 그래프
+@app.route('/database/graph/<filename>')
+def graph_download(filename):
+    return send_from_directory('database/graph', filename)
 
 if __name__=="__main__":
   # host 등을 직접 지정하고 싶다면
