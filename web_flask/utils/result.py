@@ -112,11 +112,11 @@ def calculate_acc(ans, lcs):
     accuracy = int(len(lcs) / len(ans) * 100)
     score = ""
 
-    if accuracy == 100:
+    if accuracy >= 90:
         score = "Perfect"
-    elif accuracy >= 80:
+    elif accuracy >= 70:
         score = "Great"
-    elif accuracy >= 60:
+    elif accuracy >= 50:
         score = "Good"
     else:
         score = "Try Again"

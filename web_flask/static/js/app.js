@@ -33,7 +33,7 @@ if (!window.AudioContext) {
     context = new AudioContext();
 }
 
-// Audio 파일 만ㄷ르기
+// Audio 파일 만들기
 function playByteArray(byteArray) {
 
     var arrayBuffer = new ArrayBuffer(byteArray.length);
@@ -49,16 +49,16 @@ function playByteArray(byteArray) {
     });
 }
 
-// Play the loaded file
-function play() {
-    // Create a source node from the buffer
-    var source = context.createBufferSource();
-    source.buffer = buf;
-    // Connect to the final output node (the speakers)
-    source.connect(context.destination);
-    // Play immediately
-    source.start(0);
-}
+// // Play the loaded file
+// function play() {
+//     // Create a source node from the buffer
+//     var source = context.createBufferSource();
+//     source.buffer = buf;
+//     // Connect to the final output node (the speakers)
+//     source.connect(context.destination);
+//     // Play immediately
+//     source.start(0);
+// }
 
 function startRecording() {
   console.log("recordButton clicked");

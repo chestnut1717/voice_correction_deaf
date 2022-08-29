@@ -20,6 +20,10 @@
 
         <div class="row">
           
+          <!-- feature 처음 -->
+          <!-- <div class="col-lg-6">
+            <img src="assets/img/features.png" class="img-fluid" alt="">
+          </div> -->
 
           <div class="col-lg-6 mt-5 mt-lg-0 d-flex">
             <div class="row align-self-center gy-4">
@@ -38,7 +42,7 @@
           
           <div>
             <div>
-              <h2>Lv1. The rocket book (level 및 책 제목 출력) </h2>
+              <h2>Lv1. Denslow's three bears</h2>
           
             <div class ="textbox" >
               {{ data['context'] }}
@@ -103,12 +107,13 @@
           <!-- 마이크 녹음 부분 -->
           <body>
             <div class="buttoncenter">
-              <button id="recordButton"> Rec </button>
-              <button id="stopButton"> Stop </button>
+              <form action="service_example", method="POST">
+                <button id="btn"> Rec </button>
+                <button id="stopButton"> Stop </button>
+              </form>
               <!-- <button id="Feedback" ><a href="feedback_better.html"style="color: black;"> Feedback</a></button> -->
             <div>
             <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
-            <script src="../static/js/app.js"></script>
             <div id="sound-clips"></div>
 
         </body>

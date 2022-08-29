@@ -106,14 +106,17 @@
                 <div class="greatinfo">
                   <div class="profile mt-auto">
                     <img src="assets/img/testimonials/great.png" class="testimonial-img" alt="">
+
                   </div>
                 </div>
-                <h3> {{ data["result"][0] }} </h3>
+                <h3> {{ data["result"][0] }}% </h3>
                 <h4> {{ data["result"][1] }} </h4>
                 <p>
                   Answer: {{ data["answer"][0] }}
+                  <!-- Answer: she sells seashells by the seashore! -->
                   <br>
                   Yours: {{ data["deaf"][0] }}
+                  <!-- Yours: chee sails tea shos bronekey shore! -->
                 </p>
               </div>
             </div>
@@ -121,10 +124,18 @@
             <div class="slide">
               <div class="testimonial-item">
                 <h3 style="text-align:center;">발음기호: {{ data["answer"][1] }} </h3><br>
+                <!-- <h3 style="text-align:center;">발음기호: ʃiː s<span style="font-weight: bold; font-size: 25px; color: red;">^</span>ɛlz s<span style="font-weight: bold; font-size: 25px; color: red;">^</span>iːʃɛlz baɪ ðə s<span style="font-weight: bold; font-size: 25px; color: red;">^</span>iːʃoːɹ </h3><br> -->
+
+                <div style="margin: auto">
+                  <audio controls>
+                    <source src="{{ url_for('audio_download', filename='answer.wav') }}" type="audio/wav">
+                    Your browser does not support the audio tag.
+                  </audio>
+                </div>
                 <div class="justify-content-center mb-4" role="toolbar" aria-label="Toolbar with button groups">
                   <div class="btn-group me-2" role="group" aria-label="First group"  style="overflow-block: hidden;">
                   {% for idx in range(data['correct_list']|length) %}
-
+                      
                     {% if data['correct_list'][idx][0] == ' ' %}
                       &nbsp;&nbsp;&nbsp;
                     {% elif data['correct_list'][idx][1] == 0 %}
@@ -193,7 +204,8 @@
             <video class="embed-responsive-item" src="" type="video/quicktime" controls></video>
           </div>
           <div class="tongue_image">
-            <img src="assets/img/(1) Front_high.png" alt="">
+            <img src="https://github.com/queque5987/better-test/blob/main/(1)%20Front_high.png?raw=true"
+             alt="" style="width: 100%; height:100%; margin-top:10px;">
           </div>
         </div>
       </div>
