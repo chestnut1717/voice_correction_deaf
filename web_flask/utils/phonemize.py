@@ -29,7 +29,7 @@ def speak_to_phoneme(audio, tokenizer, model, is_stress=False):
     prediction = torch.argmax(logits, dim = -1)
 
     # decoeding해서 text로 변환
-    transcription = tokenizer.batch_decode(prediction)[0]
+    transcription = tokenizer.batch_decode(prediction)[0].lower()
 
     print(transcription)
 

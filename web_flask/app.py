@@ -45,6 +45,8 @@ def record():
 
         # real-time voice model로 request
         ans_wav, sr = rtvc_conn.get_wav(audio, sr, ans_transcription)
+        print(type(ans_wav), ans_wav.shape, sr)
+        print("audio 완료")
 
         # 맞춤형 원어민 발화 데이터 저장
         sf.write("database/audio/answer.wav", ans_wav, sr)
@@ -68,14 +70,16 @@ def record():
 
         # to graph(image)
         result.to_graph(ans_wav, audio, smoothing=True)
+        print("그래프 완료")
 
         global data
         data = {"answer" : [ans_transcription, ans_phoneme_stress],
-            "deaf" : [deaf_transcription, deaf_phoneme.lower()],
+            "deaf" : [deaf_transcription, deaf_phoneme],
             "result": [accuracy, score],
             "correct_list" : correct_list }
 
         return redirect(url_for('feedback'))
+        # return render_template('feedback.html', data=data)
 
 
 @app.route('/feedback', methods=['GET'])
@@ -179,7 +183,7 @@ def feedback_example():
     print('그래프 그리기 성공')
     global data
     data = {"answer" : [ans_transcription, ans_phoneme_stress],
-           "deaf" : [deaf_transcription, deaf_phoneme.lower()],
+           "deaf" : [deaf_transcription, deaf_phoneme],
            "result": [accuracy, score],
           #  "wav" : wav.tolist(),
           #  "wav_name" : wav_name,

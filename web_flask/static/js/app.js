@@ -165,7 +165,7 @@ function createDownloadLink(blob) {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
             var result = xhr.response;
-
+            console.log(result)
             // https://stackoverflow.com/questions/38926335/flask-redirecturl-for-returning-html-but-not-loading-page
             window.location = "/feedback";
 

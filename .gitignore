@@ -4,3 +4,5 @@ utils/__pycache__
 /web_flask/model
 /web_flask/tokenizer
 /web_flask/utils/__pycache__
+/web_flask/database/graph
+/web_flask/database/audi/

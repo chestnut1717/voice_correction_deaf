@@ -123,17 +123,38 @@ def calculate_acc(ans, lcs):
 
     return accuracy, score
 
+# 장음기호(ː)연결시켜주는 프로그램
+def long_vowel_process(phonemes):
+
+  idx = 0
+  new_phonemes = []
+
+  while idx < len(phonemes):
+    if (idx+1) < len(phonemes) and phonemes[idx + 1] == "ː":
+      new_phonemes.append(phonemes[idx] + phonemes[idx + 1])
+      idx += 2
+    else:
+      new_phonemes.append(phonemes[idx])
+      idx += 1
+  
+
+  return new_phonemes
+
 # 정답 음소와 발화자의 음소 중, 일치하는 음소 구분해서 출력해주는 함수
 def highlight(ans, lcs):
   # answer phonemes중에 틀린것은 0, 일치하는 것은 1로 두어, 0인것은 나중에 틀린것 표시하기 위함
-  correct = [[i, 0] for i in ans]
+
+  new_ans = long_vowel_process(ans)
+  new_lcs = long_vowel_process(lcs)
+
+  correct = [[i, 0] for i in new_ans]
   idx=0
 
   # lcs에서 하니씩 음소를 가져와서 answer과 비교함
   ## 일치하면 correct의 해당 음소의 값을 0에서 1로
-  for char in lcs:
-      while idx < len(ans):
-          tmp = ans[idx]
+  for char in new_lcs:
+      while idx < len(new_ans):
+          tmp = new_ans[idx]
 
           if tmp == char:
               correct[idx][1] = 1
@@ -142,14 +163,4 @@ def highlight(ans, lcs):
           idx += 1
     
   return correct
-
-# def to_graph(ans_wav, deaf_wav):
-
-#     rms1, rms2 = librosa.feature.rms(ans_wav), librosa.feature.rms(deaf_wav)
-#     compare, sample = downsample(rms1, rms2)
-#     # plt.plot(compare, sample)
-#     # new_alignment = dtw.dtw(compare.flatten(), sample.flatten())
-#     # new_alignment.plot(type='twoway').savefig('rms.png')
-#     # plt.savefig('dtw.png')
-#     return None
 
